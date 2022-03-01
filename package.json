@@ -1,6 +1,6 @@
 {
   "name": "bitski-web3-react-connector",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "Bitski wallet connector for web3-react",
   "files": [
     "dist",
