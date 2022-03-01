@@ -1,6 +1,5 @@
 import { InjectedConnector } from '@web3-react/injected-connector';
-
-import { BitskiConnector } from '../../dist';
+import { BitskiConnector } from 'bitski-web3-react-connector';
 
 export const injected = new InjectedConnector({ supportedChainIds: [1, 3, 4, 5, 42] });
 

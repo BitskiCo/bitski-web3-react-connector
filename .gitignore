@@ -3,3 +3,4 @@ packages/*/dist/
 .env.local
 /.rts2*/
 /dist/
+/example/v6/.next/

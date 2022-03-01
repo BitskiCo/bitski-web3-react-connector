@@ -2,7 +2,11 @@
   "name": "bitski-web3-react-connector",
   "version": "6.0.2",
   "description": "Bitski wallet connector for web3-react",
-  "main": "src/index.ts",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "main": "dist/index.js",
   "module": "dist/bitski-web3-react-connector.esm.js",
   "typings": "dist/index.d.ts",
   "peerDependencies": {
