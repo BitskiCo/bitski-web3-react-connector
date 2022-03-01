@@ -19,7 +19,8 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "lint": "tsdx lint src"
+    "lint": "tsdx lint src",
+    "semantic-release": "semantic-release"
   },
   "peerDependencies": {
     "@web3-react/abstract-connector": "^6.0.7",
