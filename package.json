@@ -63,5 +63,8 @@
   "bugs": {
     "url": "https://github.com/Bitskico/bitski-web3-react-connector/issues"
   },
-  "homepage": "https://github.com/Bitskico/bitski-web3-react-connector#readme"
+  "homepage": "https://github.com/Bitskico/bitski-web3-react-connector#readme",
+  "publishConfig": {
+    "access": "public"
+  }
 }
