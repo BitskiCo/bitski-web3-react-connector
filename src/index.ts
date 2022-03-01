@@ -1,57 +1,74 @@
-import {
-  Actions,
-  Connector,
-} from '@web3-react/types';
+import { AbstractConnector } from '@web3-react/abstract-connector'
+import { ConnectorUpdate } from '@web3-react/types'
+import invariant from 'tiny-invariant'
 
-const networkToChainId: { [network: string]: number } = {
-  mainnet: 1,
-  rinkeby: 4,
-  polygon: 137,
-  mumbai: 80001
-};
+const chainIdToNetwork: { [network: number]: string } = {
+  1: 'mainnet',
+  4: 'rinkeby',
+  137: 'polygon',
+  80001: 'mumbai'
+}
 
 interface BitskiConnectorArguments {
   clientId: string
-  network?: 'mainnet' | 'rinkeby' | 'polygon' | 'mumbai'
+  chainId: number
   callbackUrl?: string
-};
+}
 
-export class Bitski extends Connector {
-  private readonly options: BitskiConnectorArguments;
+export class BitskiConnector extends AbstractConnector {
+  private readonly clientId: string
+  private readonly chainId: number
+  private readonly callbackUrl?: string
 
-  public bitski: any;
+  public bitski: any
 
-  constructor(actions: Actions, options: BitskiConnectorArguments) {
-    super(actions);
-    this.options = options;
+  constructor({ clientId, chainId, callbackUrl }: BitskiConnectorArguments) {
+    invariant(Object.keys(chainIdToNetwork).includes(chainId.toString()), `Unsupported chainId ${chainId}`)
+    super({ supportedChainIds: [chainId] })
+
+    this.clientId = clientId
+    this.chainId = chainId
+    this.callbackUrl = callbackUrl
   }
 
-  public async activate(): Promise<void> {
-    return this.initialize();
-  }
-
-  private async initialize(): Promise<void> {
-    this.actions.startActivation();
-
+  public async activate(): Promise<ConnectorUpdate> {
     if (!this.bitski) {
       const { Bitski } = await import('bitski')
-      this.bitski = new Bitski(
-        this.options.clientId,
-        this.options.callbackUrl,
-      )
-    }
-
-    let chainId = 1;
-
-    if (this.options.network) {
-      chainId = networkToChainId[this.options.network];
+      this.bitski = new Bitski(this.clientId, this.callbackUrl)
     }
 
     const network = {
-      networkName: this.options.network || 'mainnet',
-      chainId,
+      networkName: chainIdToNetwork[this.chainId]
     }
 
-    this.provider = this.bitski.getProvider(network);
-  };
+    const account = await this.bitski.signIn().then((accounts: string[]): string => accounts[0])
+
+    return { provider: this.bitski.getProvider(network), chainId: this.chainId, account }
+  }
+
+  public async getProvider(chainId?: number): Promise<any> {
+    const network = {
+      networkName: chainIdToNetwork[chainId || this.chainId]
+    }
+
+    return this.bitski.getProvider(network)
+  }
+
+  public async getChainId(): Promise<number | string> {
+    return this.chainId
+  }
+
+  public async getAccount(): Promise<null | string> {
+    return this.bitski
+      .getProvider()
+      .send('eth_accounts')
+      .then((accounts: string[]): string => accounts[0])
+  }
+
+  public deactivate() { }
+
+  public async close() {
+    await this.bitski.signOut()
+    this.emitDeactivate()
+  }
 }
