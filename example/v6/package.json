@@ -12,7 +12,7 @@
     "@web3-react/injected-connector": "^6.0.7",
     "bitski-web3-react-connector": "^6.0.2",
     "bitski": "0.13.1",
-    "next": "^9.2.1",
+    "next": "^13.1.1",
     "react": ">=16.8",
     "react-dom": ">=16.8",
     "typescript": "^3.7.5"
